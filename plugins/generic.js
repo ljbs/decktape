@@ -44,14 +44,17 @@ class Generic {
   }
 
   getName() {
+    console.log('generic.getName()');
     return 'Generic';
   }
 
   isActive() {
+    console.log('generic.isActive()');
     return true;
   }
 
   async configure() {
+    console.log('generic.configure()');
     await this.page.emulateMedia(this.media);
     await this.page.exposeFunction('onMutation', _ => (this.isNextSlideDetected = true));
     await this.page.evaluate(_ =>
@@ -64,6 +67,7 @@ class Generic {
   }
 
   slideCount() {
+    console.log('generic.slideCount()');
     return undefined;
   }
 
@@ -71,6 +75,7 @@ class Generic {
   // actually emulate end-user interaction by pressing the configured key and check whether
   // the DOM has changed a posteriori.
   async hasNextSlide() {
+    console.log('generic.hasNextSlide()');
     if (this.options.maxSlides && this.currentSlide >= this.options.maxSlides)
       return false;
     await this.page.keyboard.press(this.key);
@@ -82,11 +87,13 @@ class Generic {
   }
 
   nextSlide() {
+    console.log('generic.nextSlide()');
     this.currentSlide++;
     this.isNextSlideDetected = false;
   }
 
   async currentSlideIndex() {
+    console.log('generic.currentSlideIndex()');
     const hash = await this.page.evaluate(_ => window.location.hash);
     const [, fragment] = hash.match(/^#\/?([^?]*)/) || [];
     return fragment || this.currentSlide;
