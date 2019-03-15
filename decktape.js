@@ -51,6 +51,12 @@ parser.script('decktape').options({
     default : 0,
     help    : 'Duration in milliseconds between the page has loaded and starting to export slides',
   },
+  loadTimeout : {
+    full    : 'load-timeout',
+    metavar : '<ms>',
+    default : 20000,
+    help    : 'Maximal duration in milliseconds of loading the page before a timeout error is thrown',
+  },
   screenshots : {
     default : false,
     flag    : true,
@@ -216,7 +222,7 @@ process.on('unhandledRejection', error => {
     .on('pageerror', error => console.log(chalk`\n{red Page error: ${error.message}}`));
 
   console.log('Loading page', options.url, '...');
-  const load = page.waitForNavigation({ waitUntil: 'load', timeout: 20000 });
+  const load = page.waitForNavigation({ waitUntil: 'load', timeout: options.loadTimeout });
   page.goto(options.url, { waitUntil: 'networkidle0', timeout: 60000 })
     // wait until the load event is dispatched
     .then(response => load
