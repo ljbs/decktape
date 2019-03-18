@@ -54,8 +54,14 @@ parser.script('decktape').options({
   loadTimeout : {
     full    : 'load-timeout',
     metavar : '<ms>',
+    default : 60000,
+    help    : 'Maximal duration in milliseconds of loading the page before a timeout error is thrown (0 to disable timeout)',
+  },
+  navigationTimeout : {
+    full    : 'navigation-timeout',
+    metavar : '<ms>',
     default : 20000,
-    help    : 'Maximal duration in milliseconds of loading the page before a timeout error is thrown',
+    help    : 'Maximal duration in milliseconds of navigation to a slide before a timeout error is thrown (0 to disable timeout)',
   },
   screenshots : {
     default : false,
@@ -222,8 +228,8 @@ process.on('unhandledRejection', error => {
     .on('pageerror', error => console.log(chalk`\n{red Page error: ${error.message}}`));
 
   console.log('Loading page', options.url, '...');
-  const load = page.waitForNavigation({ waitUntil: 'load', timeout: options.loadTimeout });
-  page.goto(options.url, { waitUntil: 'networkidle0', timeout: 60000 })
+  const load = page.waitForNavigation({ waitUntil: 'load', timeout: options.navigationTimeout });
+  page.goto(options.url, { waitUntil: 'networkidle0', timeout: options.loadTimeout })
     // wait until the load event is dispatched
     .then(response => load
       .catch(error => response.status() !== 200 ? Promise.reject(error) : response)
